@@ -1,17 +1,51 @@
-getTasks(1);
-getTaskCount(1);
 
-//setInterval(getUsers, 300);
-function addTask(task, section, tags, date) {
+
+let removeMode = false;
+
+let currentPage = "upcoming";
+
+getTasks("upcoming");
+
+function addTask(task, section, desc, date) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            getTasks(section);
-            getTaskCount(section);
+            getTasks(currentPage);
         }
     };
-    xmlhttp.open("GET", "tools/functions.php?action=addTask&task=" + task + "&section=" + section + "&tags=" + tags + "&date=" + date, true);
+    xmlhttp.open("GET", "tools/functions.php?action=addTask&task=" + task + "&section=" + section + "&descr=" + desc + "&date=" + date, true);
     xmlhttp.send();
+}
+
+function taskAdder() {
+    task = document.getElementById("modal-task").value;
+    section = document.getElementById("modal-projects").value;
+    desc = document.getElementById("modal-desc").value;
+    date = document.getElementById("modal-date").value;
+    addTask(task, section, desc, date);
+}
+
+function removeTask(taskid, section) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            getTasks(currentPage);
+        }
+    };
+    xmlhttp.open("GET", "tools/functions.php?action=removeTask&taskid=" + taskid, true);
+    xmlhttp.send();
+}
+
+function taskManagement(taskid, section, success) {
+    if (removeMode) {
+        removeTask(taskid, section);
+    } else {
+        if (success) {
+            unsuccessTask(taskid, section);
+        } else {
+            successTask(taskid, section);
+        }
+    }
 }
 
 function successTask(taskid, section) {
@@ -41,6 +75,31 @@ function getTasks(section) {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             document.getElementById("taskList").innerHTML = this.responseText;
+            let titleToday = '<i class="fa-solid fa-bell mb-4"></i> Today <span class="text-secondary"> - <span id="taskCount"></span>';
+            let titleUpcoming = '<i class="fa-solid fa-angles-right mb-4"></i> Upcoming <span class="text-secondary"> - <span id="taskCount"></span>';
+            let titleCalendar = '<i class="fa-solid fa-calendar mb-4"></i> Calendar <span class="text-secondary"> - <span id="taskCount"></span>';
+            switch (section) {
+                case "today":
+                    document.getElementById("taskTitle").innerHTML = titleToday;
+                    break;
+                case "upcoming":
+                    document.getElementById("taskTitle").innerHTML = titleUpcoming;
+                    break;
+                case "specific":
+                    document.getElementById("taskTitle").innerHTML = titleCalendar;
+                    break;
+                default:
+                    document.getElementById("taskTitle").innerHTML = "";
+                    break;
+            }
+            currentPage = section;
+            getTaskCount(section);
+            if (removeMode) {
+                let removeButtons = document.getElementsByName("removeButton");
+                removeButtons.forEach(btn => {
+                    btn.classList.remove("d-none")
+                });
+            }
         }
     };
     xmlhttp.open("GET", "tools/functions.php?action=getTasks&section=" + section, true);
@@ -56,4 +115,28 @@ function getTaskCount(section) {
     };
     xmlhttp.open("GET", "tools/functions.php?action=getTaskCount&section=" + section, true);
     xmlhttp.send();
+}
+
+let intervalID;
+
+function removeModeSW() {
+    let removeButtons = document.getElementsByName("removeButton");
+    switch (removeMode) {
+        case true:
+            removeMode = false;
+            removeButtons.forEach(btn => {
+                btn.classList.add("d-none")
+            });
+            document.getElementById("removemodswitch").classList.replace("btn-danger", "btn-dark");
+            console.log("Remove mod deactivated");
+            break;
+        case false:
+            removeMode = true;
+            removeButtons.forEach(btn => {
+                btn.classList.remove("d-none")
+            });
+            document.getElementById("removemodswitch").classList.replace("btn-dark", "btn-danger");
+            console.log("Remove mod activated");
+            break;
+    }
 }

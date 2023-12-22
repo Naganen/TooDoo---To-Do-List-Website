@@ -8,12 +8,43 @@
     <script src="https://kit.fontawesome.com/2a63621396.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-dark overflow-x-hidden" data-bs-theme="dark">
+    <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addTaskModalLabel">Add New Task</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input class="form-control m-2" type="text" name="task" id="modal-task" placeholder="Task">
+                        <input class="form-control m-2" type="text" name="desc" id="modal-desc"
+                            placeholder="Description">
+                        <span class="input-group m-2">
+                            <span class="input-group-text w-50">Related Project</span>
+                            <select class="form-select" name="projects" id="modal-projects">
+                                <option value="1">Project 1</option>
+                            </select>
+                        </span>
+                        <span class="input-group m-2">
+                            <span class="input-group-text w-50">Target Date</span>
+                            <input class="form-control" type="date" name="date" id="modal-date">
+                        </span>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+                    <button onclick="taskAdder()" type="button" class="btn btn-warning" data-bs-dismiss="modal">Add
+                        Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="row align-top g-2 text-light" style="min-height: 100vh;">
         <div class="col-3 text-start justify-content-start align-items-start d-none d-md-block">
             <div class="position-fixed w-25 pe-3 bg-dark-subtle h-100">
@@ -21,21 +52,24 @@
                 <div class="m-4">
                     <input class="form-control w-100 ms-2 me-2 mb-4" type="text" placeholder="Search...">
                     <h5>Tasks</h5>
-                    <p class="btn btn-dark w-100 text-start ms-2 me-2">Today<span class="float-end"><i
-                                class="fa-solid fa-bell"></i></span></p>
-                    <p class="btn btn-dark w-100 text-start ms-2 me-2">Upcoming<span class="float-end"><i
-                                class="fa-solid fa-angles-right"></i></span></p>
-                    <p class="btn btn-dark w-100 text-start ms-2 me-2">Calendar<span class="float-end"><i
-                                class="fa-solid fa-calendar"></i></span></p>
+                    <p onclick="getTasks('upcoming')" class="btn btn-dark w-100 text-start ms-2 me-2">Upcoming<span
+                            class="float-end"><i class="fa-solid fa-angles-right"></i></span></p>
+                    <p onclick="getTasks('today')" class="btn btn-dark w-100 text-start ms-2 me-2">Today<span
+                            class="float-end"><i class="fa-solid fa-bell"></i></span></p>
+                    <p onclick="getTasks('specific')" class="btn btn-dark w-100 text-start ms-2 me-2">Calendar<span
+                            class="float-end"><i class="fa-solid fa-calendar"></i></span></p>
                     <h5>Projects<span class="float-end">+</span></h5>
-                    <p class="btn btn-dark w-100 text-start ms-2 me-2">Project 1</span></p>
+                    <p onclick="getTasks(1)" class="btn btn-dark w-100 text-start ms-2 me-2">Project 1</span></p>
                 </div>
             </div>
         </div>
         <div class="col text-center justify-content-center align-items-center">
             <div class="m-4 text-start">
-                <h1 id="taskTitle"><i class="fa-solid fa-bell mb-4"></i> Today <span class="text-secondary"> - <span id="taskCount"></span></span>
-                    <span onclick="addTask('1', 1, '1,2', '2012-05-12')" class="float-end me-2">+</span>
+                <h1><span id="taskTitle"></span>
+                    <span onclick="removeModeSW()" id="removemodswitch" class="float-end me-2 btn btn-dark"><i
+                            class="fa-solid fa-trash"></i></span>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#addTaskModal"
+                        class="float-end me-2 btn btn-dark"><i class="fa-solid fa-plus"></i></button>
                 </h1>
                 <div id="taskList">
 
@@ -45,6 +79,9 @@
         </div>
     </div>
     <script src="script.js?ver=1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
