@@ -4,28 +4,27 @@ let removeMode = false;
 
 let currentPage = "upcoming";
 
-getTasks("upcoming");
+//getTasks("upcoming");
 
-function addTask(task, section, desc, date) {
+function addTask(task, desc, date) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             getTasks(currentPage);
         }
     };
-    xmlhttp.open("GET", "tools/functions.php?action=addTask&task=" + task + "&section=" + section + "&descr=" + desc + "&date=" + date, true);
+    xmlhttp.open("GET", "tools/functions.php?action=addTask&task=" + task + "&descr=" + desc + "&date=" + date, true);
     xmlhttp.send();
 }
 
 function taskAdder() {
     task = document.getElementById("modal-task").value;
-    section = document.getElementById("modal-projects").value;
     desc = document.getElementById("modal-desc").value;
     date = document.getElementById("modal-date").value;
-    addTask(task, section, desc, date);
+    addTask(task, desc, date);
 }
 
-function removeTask(taskid, section) {
+function removeTask(taskid) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -77,7 +76,7 @@ function getTasks(section) {
             document.getElementById("taskList").innerHTML = this.responseText;
             let titleToday = '<i class="fa-solid fa-bell mb-4"></i> Today <span class="text-secondary"> - <span id="taskCount"></span>';
             let titleUpcoming = '<i class="fa-solid fa-angles-right mb-4"></i> Upcoming <span class="text-secondary"> - <span id="taskCount"></span>';
-            let titleCalendar = '<i class="fa-solid fa-calendar mb-4"></i> Calendar <span class="text-secondary"> - <span id="taskCount"></span>';
+            let titleCalendar = '<i class="fa-solid fa-angles-left mb-4"></i> Outdated <span class="text-secondary"> - <span id="taskCount"></span>';
             switch (section) {
                 case "today":
                     document.getElementById("taskTitle").innerHTML = titleToday;
@@ -85,11 +84,8 @@ function getTasks(section) {
                 case "upcoming":
                     document.getElementById("taskTitle").innerHTML = titleUpcoming;
                     break;
-                case "specific":
+                case "former":
                     document.getElementById("taskTitle").innerHTML = titleCalendar;
-                    break;
-                default:
-                    document.getElementById("taskTitle").innerHTML = "";
                     break;
             }
             currentPage = section;
@@ -110,7 +106,9 @@ function getTaskCount(section) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("taskCount").innerHTML = this.responseText;
+            if (document.getElementById("taskCount") != null) {
+                document.getElementById("taskCount").innerHTML = this.responseText;
+            }
         }
     };
     xmlhttp.open("GET", "tools/functions.php?action=getTaskCount&section=" + section, true);

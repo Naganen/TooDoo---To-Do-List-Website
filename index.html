@@ -10,7 +10,7 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 
-<body class="bg-dark overflow-x-hidden" data-bs-theme="dark">
+<body class="bg-dark overflow-x-hidden" data-bs-theme="dark" onload="getTasks('upcoming');">
     <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -23,12 +23,6 @@
                         <input class="form-control m-2" type="text" name="task" id="modal-task" placeholder="Task">
                         <input class="form-control m-2" type="text" name="desc" id="modal-desc"
                             placeholder="Description">
-                        <span class="input-group m-2">
-                            <span class="input-group-text w-50">Related Project</span>
-                            <select class="form-select" name="projects" id="modal-projects">
-                                <option value="1">Project 1</option>
-                            </select>
-                        </span>
                         <span class="input-group m-2">
                             <span class="input-group-text w-50">Target Date</span>
                             <input class="form-control" type="date" name="date" id="modal-date">
@@ -56,10 +50,8 @@
                             class="float-end"><i class="fa-solid fa-angles-right"></i></span></p>
                     <p onclick="getTasks('today')" class="btn btn-dark w-100 text-start ms-2 me-2">Today<span
                             class="float-end"><i class="fa-solid fa-bell"></i></span></p>
-                    <p onclick="getTasks('specific')" class="btn btn-dark w-100 text-start ms-2 me-2">Calendar<span
-                            class="float-end"><i class="fa-solid fa-calendar"></i></span></p>
-                    <h5>Projects<span class="float-end">+</span></h5>
-                    <p onclick="getTasks(1)" class="btn btn-dark w-100 text-start ms-2 me-2">Project 1</span></p>
+                    <p onclick="getTasks('former')" class="btn btn-dark w-100 text-start ms-2 me-2">Outdated<span
+                            class="float-end"><i class="fa-solid fa-angles-left"></i></span></p>
                 </div>
             </div>
         </div>

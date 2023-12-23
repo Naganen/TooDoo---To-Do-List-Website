@@ -10,11 +10,10 @@ switch ($_GET['action']) {
     case "addTask":
         $userid = $_COOKIE['login'];
         $task = $_GET['task'];
-        $section = $_GET['section'];
         $descr = $_GET['descr'];
         $date = $_GET['date'];
 
-        if (mysqli_query($con, "INSERT INTO tasks(user, task, section, descr, date) VALUES ('$userid', '$task', $section, '$descr', DATE('$date'))")) {
+        if (mysqli_query($con, "INSERT INTO tasks(user, task, descr, date) VALUES ('$userid', '$task', '$descr', DATE('$date'))")) {
             echo "task created";
         } else {
             echo "error";
@@ -42,20 +41,14 @@ switch ($_GET['action']) {
                 }
                 break;
             case 'upcoming':
-                $query = mysqli_query($con, "SELECT * FROM tasks WHERE date > CURDATE() ORDER BY date ASC");
+                $query = mysqli_query($con, "SELECT * FROM tasks WHERE date >= CURDATE() ORDER BY date ASC");
                 while ($task = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
                     taskHTML($task, $section);
                 }
                 break;
-            case 'specific':
+            case 'former':
                 $specificdate = $_GET['date'];
-                $query = mysqli_query($con, "SELECT * FROM tasks WHERE date = DATE('$specificdate') ORDER BY date ASC");
-                while ($task = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
-                    taskHTML($task, $section);
-                }
-                break;
-            default:
-                $query = mysqli_query($con, "SELECT * FROM tasks WHERE section = $section ORDER BY date ASC");
+                $query = mysqli_query($con, "SELECT * FROM tasks WHERE date < CURDATE() ORDER BY date ASC");
                 while ($task = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
                     taskHTML($task, $section);
                 }
@@ -88,14 +81,11 @@ switch ($_GET['action']) {
                 $query = mysqli_query($con, "SELECT COUNT(*) FROM tasks WHERE date = CURDATE()");
                 break;
             case 'upcoming':
-                $query = mysqli_query($con, "SELECT COUNT(*) FROM tasks WHERE date > CURDATE()");
+                $query = mysqli_query($con, "SELECT COUNT(*) FROM tasks WHERE date >= CURDATE()");
                 break;
-            case 'specific':
+            case 'former':
                 $specificdate = $_GET['date'];
-                $query = mysqli_query($con, "SELECT COUNT(*) FROM tasks WHERE date = DATE('$specificdate')");
-                break;
-            default:
-                $query = mysqli_query($con, "SELECT COUNT(*) FROM tasks WHERE section = $section");
+                $query = mysqli_query($con, "SELECT COUNT(*) FROM tasks WHERE date < CURDATE()");
                 break;
 
         }
@@ -105,7 +95,7 @@ switch ($_GET['action']) {
 }
 
 function taskHTML($task, $section)
-{   
+{
     $date = date_format(date_create($task['date']), 'd M Y');
     if (!$task['status']) {
         echo "
@@ -114,7 +104,6 @@ function taskHTML($task, $section)
                 <i class='fa-solid fa-square me-2'></i>{$task['task']}
             </span>
             <span class='text-secondary'>
-                <span class='me-4'>{$task['section']}</span>
                 <span class='me-1 bg-dark p-1 ps-2 pe-2 rounded-3'>{$task['descr']}</span>
             </span>
             <span class='float-end removeButton ms-2 text-danger d-none' name='removeButton'>
@@ -131,7 +120,6 @@ function taskHTML($task, $section)
                 <i class='fa-solid fa-check me-2'></i>{$task['task']}
             </span>
             <span class='text-secondary'>
-                <span class='me-4'>{$task['section']}</span>
                 <span class='me-1 bg-dark p-1 ps-2 pe-2 rounded-3'>{$task['descr']}</span>
             </span>
             <span class='float-end removeButton ms-2 text-danger d-none' name='removeButton'>
