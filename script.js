@@ -115,7 +115,6 @@ function getTaskCount(section) {
     xmlhttp.send();
 }
 
-let intervalID;
 
 function removeModeSW() {
     let removeButtons = document.getElementsByName("removeButton");
